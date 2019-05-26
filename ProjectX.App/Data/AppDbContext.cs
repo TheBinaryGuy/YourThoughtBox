@@ -11,5 +11,8 @@ namespace ProjectX.App.Data
         }
 
         public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
+        public DbSet<Thought> Thoughts { get; set; }
+        public DbSet<DeleteRequest> DeleteRequests { get; set; }
+        public DbSet<Viewer> Viewers { get; set; }
     }
 }

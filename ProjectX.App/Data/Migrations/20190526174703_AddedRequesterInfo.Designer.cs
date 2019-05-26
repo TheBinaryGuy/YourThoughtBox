@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjectX.App.Data;
 
 namespace ProjectX.App.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190526174703_AddedRequesterInfo")]
+    partial class AddedRequesterInfo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,7 +31,7 @@ namespace ProjectX.App.Data.Migrations
                     b.ToTable("DataProtectionKeys");
                 });
 
-            modelBuilder.Entity("ProjectX.App.Models.DeleteRequest", b =>
+            modelBuilder.Entity("ProjectX.App.Models.RequesterInfo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -42,7 +44,7 @@ namespace ProjectX.App.Data.Migrations
 
                     b.HasIndex("ThoughtId");
 
-                    b.ToTable("DeleteRequests");
+                    b.ToTable("RequesterInfo");
                 });
 
             modelBuilder.Entity("ProjectX.App.Models.Thought", b =>
@@ -54,8 +56,6 @@ namespace ProjectX.App.Data.Migrations
                         .IsRequired();
 
                     b.Property<DateTimeOffset>("CreatedAt");
-
-                    b.Property<bool>("IsDeleted");
 
                     b.Property<string>("Tags")
                         .IsRequired();
@@ -71,31 +71,7 @@ namespace ProjectX.App.Data.Migrations
                     b.ToTable("Thoughts");
                 });
 
-            modelBuilder.Entity("ProjectX.App.Models.Viewer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("IP");
-
-                    b.Property<int>("ThoughtId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ThoughtId");
-
-                    b.ToTable("Viewers");
-                });
-
-            modelBuilder.Entity("ProjectX.App.Models.DeleteRequest", b =>
-                {
-                    b.HasOne("ProjectX.App.Models.Thought", "Thoughts")
-                        .WithMany()
-                        .HasForeignKey("ThoughtId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("ProjectX.App.Models.Viewer", b =>
+            modelBuilder.Entity("ProjectX.App.Models.RequesterInfo", b =>
                 {
                     b.HasOne("ProjectX.App.Models.Thought", "Thoughts")
                         .WithMany()

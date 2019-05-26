@@ -1,0 +1,62 @@
+﻿@model ProjectX.App.ViewModels.ThoughtViewModel
+
+<h1>What's on your mind?</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="AddThought" id="addThoughtForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Content" class="control-label"></label>
+                <input asp-for="Content" class="form-control" />
+                <span asp-validation-for="Content" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Tags" class="control-label"></label>
+                <input asp-for="Tags" class="form-control" />
+                <span asp-validation-for="Tags" class="text-danger"></span>
+            </div>
+            <div class="form-group" id="tagBadges">
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Add" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @*<script>
+        $.ready = function () {
+            $("#Tags").on("keyup", manageTags);
+            $("form").submit(submitForm);
+
+            var tags = "";
+            var tempTags = [];
+
+            function manageTags(e) {
+
+                if (e.key == ',') {
+                    let temp = e.target.value;
+                    temp = temp.slice(0, temp.length - 1);
+                    temp = temp.trim();
+                    tags += temp + ',';
+                    tempTags.push(temp);
+                    e.target.value = '';
+
+                    temp = '<span class="badge badge-dark ml-1">' + temp + '</span>';
+                    $("#tagBadges").append(temp);
+                }
+            }
+
+            function submitForm(e) {
+                e.preventDefault();
+                tags = tags.slice(0, tags.length - 1);
+                $("#Tags").val(tags);
+                $(this).unbind('submit').submit();
+            }
+        };
+    </script>*@
+}
