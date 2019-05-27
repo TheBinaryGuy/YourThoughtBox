@@ -30,8 +30,7 @@ namespace ThoughtBox.App.Controllers
         {
             var model = await _thoughtService.GetThoughtsAsync(page, 10);
 
-            //var ip = HttpContext.Request.Headers["HTTP_CF_CONNECTING_IP"].ToString()?.ToLower();
-            var ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+            var ip = HttpContext.Request.Headers["HTTP_CF_CONNECTING_IP"].ToString()?.ToLower();
             if (!string.IsNullOrWhiteSpace(ip) && model != null && ip == "::1")
             {
                 _logger.LogInformation($"Content requested by {ip}");
@@ -55,8 +54,7 @@ namespace ThoughtBox.App.Controllers
                 return NotFound();
             }
 
-            //var ip = HttpContext.Request.Headers["HTTP_CF_CONNECTING_IP"].ToString()?.ToLower();
-            var ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+            var ip = HttpContext.Request.Headers["HTTP_CF_CONNECTING_IP"].ToString()?.ToLower();
             if (!string.IsNullOrWhiteSpace(ip) && ip == "::1")
             {
                 _logger.LogInformation($"Content requested by {ip}");
