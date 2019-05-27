@@ -5,6 +5,6 @@ namespace ThoughtBox.App.Services
 {
     public interface IThoughtService
     {
-        Task<ThoughtViewModel> GetThoughts(int currentPage, int pageSize);
+        Task<ThoughtViewModel> GetThoughtsAsync(int currentPage, int pageSize);
     }
 }

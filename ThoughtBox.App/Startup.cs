@@ -43,6 +43,7 @@ namespace ThoughtBox.App
                 .AddKeyManagementOptions(options => options.XmlRepository = built.GetService<IXmlRepository>());
 
             services.AddScoped<IThoughtService, ThoughtService>();
+            services.AddScoped<IViewService, ViewService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

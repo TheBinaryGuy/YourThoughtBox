@@ -14,7 +14,7 @@ namespace ThoughtBox.App.Services
             _context = context;
         }
 
-        public async Task<ThoughtViewModel> GetThoughts(int currentPage, int pageSize)
+        public async Task<ThoughtViewModel> GetThoughtsAsync(int currentPage, int pageSize)
         {
             var model = new ThoughtViewModel { TotalThoughts = _context.Thoughts.Count(t => !t.IsDeleted), CurrentPage = currentPage, PageSize = pageSize };
             model.Thoughts = _context.Thoughts.OrderByDescending(t => t.Id).Where(t => !t.IsDeleted).Skip(model.PageSize * (currentPage - 1)).Take(model.PageSize).ToList();

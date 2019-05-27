@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ThoughtBox.App.Data;
 using ThoughtBox.App.Models;
@@ -16,35 +15,33 @@ namespace ThoughtBox.App.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly AppDbContext _context;
         private readonly IThoughtService _thoughtService;
+        private readonly IViewService _viewService;
 
-        public HomeController(ILogger<HomeController> logger, AppDbContext context, IThoughtService thoughtService)
+        public HomeController(ILogger<HomeController> logger, AppDbContext context, IThoughtService thoughtService, IViewService viewService)
         {
             _logger = logger;
             _context = context;
             _thoughtService = thoughtService;
+            _viewService = viewService;
         }
 
         [HttpGet("/")]
         public async Task<IActionResult> Index(int page = 1)
         {
-            var model = await _thoughtService.GetThoughts(page, 10);
+            var model = await _thoughtService.GetThoughtsAsync(page, 10);
 
-            var ip = HttpContext.Request.Headers["HTTP_CF_CONNECTING_IP"].ToString()?.ToLower();
-            if (!string.IsNullOrWhiteSpace(ip))
+            //var ip = HttpContext.Request.Headers["HTTP_CF_CONNECTING_IP"].ToString()?.ToLower();
+            var ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+            if (!string.IsNullOrWhiteSpace(ip) && model != null && ip == "::1")
             {
                 _logger.LogInformation($"Content requested by {ip}");
+                await _viewService.CountViewsAsync(model.Thoughts, ip);
             }
             else
             {
                 _logger.LogInformation($"Content requested");
             }
 
-            model.Thoughts.ForEach(m =>
-            {
-                _context.Entry(m).State = EntityState.Modified;
-                m.Views++;
-            });
-            await _context.SaveChangesAsync();
             return View(model);
         }
 
@@ -57,10 +54,19 @@ namespace ThoughtBox.App.Controllers
                 _logger.LogInformation("Thought Not Found!", $"Thought Id: {thought.Id}");
                 return NotFound();
             }
-            _logger.LogInformation("Thought Fetched!", thought);
-            _context.Entry(thought).State = EntityState.Modified;
-            thought.Views++;
-            await _context.SaveChangesAsync();
+
+            //var ip = HttpContext.Request.Headers["HTTP_CF_CONNECTING_IP"].ToString()?.ToLower();
+            var ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+            if (!string.IsNullOrWhiteSpace(ip) && ip == "::1")
+            {
+                _logger.LogInformation($"Content requested by {ip}");
+                await _viewService.CountViewsAsync(thought, ip);
+            }
+            else
+            {
+                _logger.LogInformation($"Content requested");
+            }
+
             return View(thought);
         }
 

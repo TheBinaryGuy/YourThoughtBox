@@ -1,16 +1,18 @@
-﻿<!DOCTYPE html>
+﻿@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="An app to share your thoughts, freely." />
-    <meta itemProp="name" content="ThoughtBox" />
+    <meta itemProp="name" content="Thought Box" />
     <meta itemProp="description" content="An app to share your thoughts, freely." />
     <meta property="og:url" content="https://ThoughtBox.brownwolfstudio.com" />
     <meta property="og:type" content="webapp" />
-    <meta property="og:title" content="ThoughtBox" />
+    <meta property="og:title" content="Thought Box" />
     <meta property="og:description" content="An app to share your thoughts, freely." />
-    <meta name="twitter:title" content="ThoughtBox" />
+    <meta name="twitter:title" content="Thought Box" />
     <meta name="twitter:description" content="An app to share your thoughts, freely." />
     <title>@(ViewData["Title"] ?? "Thought Box")</title>
 
@@ -36,6 +38,7 @@
     </header>
     <div class="container-fluid">
         <partial name="_CookieConsentPartial" />
+        <h4 class="text-center">A safe place to share!</h4>
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -43,7 +46,7 @@
 
     <footer class="border-top footer text-muted text-center">
         <div class="container-fluid">
-            &copy; @DateTime.Now.Year - <a href="https://brownwolfstudio.com">Brown Wolf Studio</a>
+            &copy; @DateTime.Now.Year - <a href="https://brownwolfstudio.com">Brown Wolf Studio</a> | @(Configuration["Version"])
         </div>
     </footer>
 
