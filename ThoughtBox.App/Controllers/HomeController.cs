@@ -28,9 +28,9 @@ namespace ThoughtBox.App.Controllers
         [HttpGet("/")]
         public async Task<IActionResult> Index(int page = 1)
         {
-            var model = await _thoughtService.GetThoughtsAsync(page, 10);
+            var model = _thoughtService.GetThoughts(page, 10);
 
-            var ip = HttpContext.Request.Headers["X-Forwarded-For"].ToString()?.ToLower();
+            var ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
             if (!string.IsNullOrWhiteSpace(ip) && model != null && ip == "::1")
             {
                 _logger.LogInformation($"Content requested by {ip}");
@@ -54,7 +54,7 @@ namespace ThoughtBox.App.Controllers
                 return NotFound();
             }
 
-            var ip = HttpContext.Request.Headers["X-Forwarded-For"].ToString()?.ToLower();
+            var ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
             if (!string.IsNullOrWhiteSpace(ip) && ip == "::1")
             {
                 _logger.LogInformation($"Content requested by {ip}");
