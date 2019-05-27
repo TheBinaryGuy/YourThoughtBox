@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ThoughtBox.App.Data;
 using ThoughtBox.App.Repositories;
+using ThoughtBox.App.Services;
 
 namespace ThoughtBox.App
 {
@@ -40,6 +41,8 @@ namespace ThoughtBox.App
             var built = services.BuildServiceProvider();
             services.AddDataProtection()
                 .AddKeyManagementOptions(options => options.XmlRepository = built.GetService<IXmlRepository>());
+
+            services.AddScoped<IThoughtService, ThoughtService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
