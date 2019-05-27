@@ -28,7 +28,7 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script>
+    @*<script>
         $.ready = function () {
             $("#Tags").on("keyup", manageTags);
             $("form").submit(submitForm);
@@ -58,5 +58,5 @@
                 $(this).unbind('submit').submit();
             }
         };
-    </script>
+    </script>*@
 }
