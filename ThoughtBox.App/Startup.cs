@@ -66,7 +66,10 @@ namespace ThoughtBox.App
             app.UseHttpsRedirection();
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+                ForwardedHeaders = ForwardedHeaders.All,
+				RequireHeaderSymmetry = false,
+				ForwardLimit = null,
+				KnownNetworks = { new IPNetwork(IPAddress.Parse("::ffff:10.0.0.5"), 104) }
             });
             app.UseStaticFiles();
             app.UseCookiePolicy();
