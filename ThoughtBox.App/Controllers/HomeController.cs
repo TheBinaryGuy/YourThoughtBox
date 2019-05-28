@@ -31,7 +31,8 @@ namespace ThoughtBox.App.Controllers
         {
             var model = _thoughtService.GetThoughts(page, 10);
 
-            var ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+            //var ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+			var ip = Request.Headers["X-Real-IP"];
             if (!string.IsNullOrWhiteSpace(ip) && model != null && ip != "::1")
             {
                 _logger.LogInformation($"Content requested by {ip}");
@@ -55,7 +56,8 @@ namespace ThoughtBox.App.Controllers
                 return NotFound();
             }
 
-            var ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+            //var ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+			var ip = Request.Headers["X-Real-IP"];
             if (!string.IsNullOrWhiteSpace(ip) && ip != "::1")
             {
                 _logger.LogInformation($"Content requested by {ip}");
