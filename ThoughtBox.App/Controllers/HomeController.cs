@@ -31,8 +31,8 @@ namespace ThoughtBox.App.Controllers
         {
             var model = _thoughtService.GetThoughts(page, 10);
 
-            var ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
-			//var ip = Request.Headers["X-Forwarded-For"];
+            //var ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+			var ip = Request.Headers["X-Forwarded-For"];
             if (!string.IsNullOrWhiteSpace(ip) && model != null && ip != "::1")
             {
                 _logger.LogInformation($"Content requested by {ip}");
