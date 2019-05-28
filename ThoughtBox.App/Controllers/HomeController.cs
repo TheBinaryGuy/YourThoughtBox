@@ -30,8 +30,7 @@ namespace ThoughtBox.App.Controllers
         public async Task<IActionResult> Index(int page = 1)
         {
             var model = _thoughtService.GetThoughts(page, 10);
-
-            //var ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+			
 			var ip = Request.Headers["X-Forwarded-For"];
             if (!string.IsNullOrWhiteSpace(ip) && model != null && ip != "::1")
             {
@@ -55,8 +54,7 @@ namespace ThoughtBox.App.Controllers
                 _logger.LogInformation("Thought Not Found!", $"Thought Id: {thought.Id}");
                 return NotFound();
             }
-
-            //var ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+			
 			var ip = Request.Headers["X-Forwarded-For"];
             if (!string.IsNullOrWhiteSpace(ip) && ip != "::1")
             {
