@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ThoughtBox.App.Data;
@@ -31,7 +32,7 @@ namespace ThoughtBox.App.Controllers
             var model = _thoughtService.GetThoughts(page, 10);
 
             var ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
-            if (!string.IsNullOrWhiteSpace(ip) && model != null && ip == "::1")
+            if (!string.IsNullOrWhiteSpace(ip) && model != null && ip != "::1")
             {
                 _logger.LogInformation($"Content requested by {ip}");
                 await _viewService.CountViewsAsync(model.Thoughts, ip);
@@ -55,7 +56,7 @@ namespace ThoughtBox.App.Controllers
             }
 
             var ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
-            if (!string.IsNullOrWhiteSpace(ip) && ip == "::1")
+            if (!string.IsNullOrWhiteSpace(ip) && ip != "::1")
             {
                 _logger.LogInformation($"Content requested by {ip}");
                 await _viewService.CountViewsAsync(thought, ip);
@@ -80,6 +81,8 @@ namespace ThoughtBox.App.Controllers
         {
             if (!ModelState.IsValid) return View(model);
             _logger.LogInformation("Adding thought!");
+			var distinctTags = model.Tags.Split(',').Distinct();
+			model.Tags = string.Join(",", distinctTags);
             var thought = new Thought
             {
                 Content = model.Content,
