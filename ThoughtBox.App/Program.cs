@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
-using NLog.Web;
+using Serilog;
+using Serilog.Events;
 
 namespace ThoughtBox.App
 {
@@ -10,23 +11,28 @@ namespace ThoughtBox.App
     {
         public static void Main(string[] args)
         {
-            // NLog: setup the logger first to catch all errors
-            var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+            // Serilog
+            Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Information()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+            .Enrich.FromLogContext()
+            .WriteTo.Console()
+            .WriteTo.File(@"/ytb/logs/YTB-.txt", rollingInterval: RollingInterval.Day)
+            .CreateLogger();
+
             try
             {
-                logger.Debug("init main");
+                Log.Information("Starting web host");
                 CreateWebHostBuilder(args).Build().Run();
             }
             catch (Exception ex)
             {
-                //NLog: catch setup errors
-                logger.Error(ex, "Stopped program because of exception");
+                Log.Fatal(ex, "Host terminated unexpectedly");
                 throw;
             }
             finally
             {
-                // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
-                NLog.LogManager.Shutdown();
+                Log.CloseAndFlush();
             }
         }
 
@@ -38,6 +44,7 @@ namespace ThoughtBox.App
                 logging.ClearProviders();
                 logging.SetMinimumLevel(LogLevel.Trace);
             })
-            .UseNLog();
+            .UseSerilog()
+            .UseApplicationInsights();
     }
 }
