@@ -26,6 +26,7 @@ namespace ThoughtBox.App.Controllers
             _viewService = viewService;
         }
 
+        [ResponseCache(Duration = 300)]
         [HttpGet("/")]
         public async Task<IActionResult> Index(int page = 1)
         {
@@ -45,6 +46,7 @@ namespace ThoughtBox.App.Controllers
             return View(model);
         }
 
+        [ResponseCache(Duration = 300)]
         [HttpGet("/thought/{id}")]
         public async Task<IActionResult> GetSpecificThought(int id)
         {
@@ -69,6 +71,7 @@ namespace ThoughtBox.App.Controllers
             return View(thought);
         }
 
+        [ResponseCache(Duration = 300)]
         [HttpGet("/add")]
         public IActionResult AddThought()
         {

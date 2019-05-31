@@ -56,6 +56,7 @@ namespace ThoughtBox.App
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseHttpsRedirection();
             }
             else
             {
@@ -64,13 +65,12 @@ namespace ThoughtBox.App
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.All,
-				RequireHeaderSymmetry = false,
-				ForwardLimit = null,
-				KnownNetworks = { new IPNetwork(IPAddress.Parse("::ffff:10.0.0.5"), 104) }
+                RequireHeaderSymmetry = false,
+                ForwardLimit = null,
+                KnownNetworks = { new IPNetwork(IPAddress.Parse("::ffff:10.0.0.5"), 104) }
             });
             app.UseStaticFiles();
             app.UseCookiePolicy();
