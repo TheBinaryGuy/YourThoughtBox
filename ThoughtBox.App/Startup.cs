@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.Repositories;
@@ -44,6 +45,20 @@ namespace ThoughtBox.App
             services.AddDataProtection()
                 .AddKeyManagementOptions(options => options.XmlRepository = built.GetService<IXmlRepository>());
 
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = "Twitter";
+            })
+            .AddCookie()
+            .AddTwitter("Twitter", options =>
+            {
+                options.ConsumerKey = Configuration["Twitter:ApiKey"];
+                options.ConsumerSecret = Configuration["Twitter:ApiSecretKey"];
+                options.SaveTokens = true;
+            });
+
             services.AddScoped<IThoughtService, ThoughtService>();
             services.AddScoped<IViewService, ViewService>();
 
@@ -73,6 +88,7 @@ namespace ThoughtBox.App
                 KnownNetworks = { new IPNetwork(IPAddress.Parse("::ffff:10.0.0.5"), 104) }
             });
             app.UseStaticFiles();
+            app.UseAuthentication();
             app.UseCookiePolicy();
             app.UseMvcWithDefaultRoute();
         }

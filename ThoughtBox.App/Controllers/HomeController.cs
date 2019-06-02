@@ -8,6 +8,10 @@ using ThoughtBox.App.Data;
 using ThoughtBox.App.Models;
 using ThoughtBox.App.Services;
 using ThoughtBox.App.ViewModels;
+using Tweetinvi;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ThoughtBox.App.Controllers
 {
@@ -17,13 +21,15 @@ namespace ThoughtBox.App.Controllers
         private readonly AppDbContext _context;
         private readonly IThoughtService _thoughtService;
         private readonly IViewService _viewService;
+        private readonly IConfiguration _configuration;
 
-        public HomeController(ILogger<HomeController> logger, AppDbContext context, IThoughtService thoughtService, IViewService viewService)
+        public HomeController(ILogger<HomeController> logger, AppDbContext context, IThoughtService thoughtService, IViewService viewService, IConfiguration configuration)
         {
             _logger = logger;
             _context = context;
             _thoughtService = thoughtService;
             _viewService = viewService;
+            _configuration = configuration;
         }
 
         [ResponseCache(Duration = 300)]
@@ -106,6 +112,19 @@ namespace ThoughtBox.App.Controllers
             var model = new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier };
             _logger.LogError("Error occurred!", model);
             return View(model);
+        }
+
+        [ResponseCache(Duration = 300)]
+        [HttpGet("/test")]
+        [Authorize]
+        public async Task<IActionResult> Test()
+        {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+            var accessTokenSecret = await HttpContext.GetTokenAsync("access_token_secret");
+            var userCredentials = Auth.CreateCredentials(_configuration["Twitter:ApiKey"], _configuration["Twitter:ApiSecretKey"], accessToken, accessTokenSecret);
+            var authenticatedUser = Tweetinvi.User.GetAuthenticatedUser(userCredentials);
+            var success = authenticatedUser.FollowUser("iamthebinaryguy");
+            return new JsonResult(new { success });
         }
     }
 }
